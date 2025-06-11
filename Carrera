@@ -1,0 +1,106 @@
+#include <Servo.h>
+
+int adelante = 2;
+int atras = 3;
+int pwmMotor = 6; // Pin PWM para controlar la potencia del motor trasero
+
+char blue;
+Servo direccion;
+int anguloDireccion = 90; // Estado actual del servo
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(adelante, OUTPUT);
+  pinMode(atras, OUTPUT);
+  pinMode(pwmMotor, OUTPUT); // Configura el pin PWM
+
+  direccion.attach(9);
+  direccion.write(90);
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    blue = Serial.read();
+
+    if (blue == 'L') {
+      anguloDireccion = 10;
+      direccion.write(anguloDireccion);
+      digitalWrite(adelante, LOW);
+      digitalWrite(atras, LOW);
+      analogWrite(pwmMotor, 0);
+    }
+
+    if (blue == 'R') {
+      anguloDireccion = 145;
+      direccion.write(anguloDireccion);
+      digitalWrite(adelante, LOW);
+      digitalWrite(atras, LOW);
+      analogWrite(pwmMotor, 0);
+    }
+
+    if (blue == 'F') {
+      if (anguloDireccion == 90) {
+        digitalWrite(adelante, HIGH);
+        digitalWrite(atras, LOW);
+        analogWrite(pwmMotor, 255); // Potencia máxima para avanzar
+      } else {
+        digitalWrite(adelante, LOW);
+        digitalWrite(atras, LOW);
+        analogWrite(pwmMotor, 0);
+      }
+    }
+
+    if (blue == 'B') {
+      if (anguloDireccion == 90) {
+        digitalWrite(adelante, LOW);
+        digitalWrite(atras, HIGH);
+        analogWrite(pwmMotor, 145); // Reducimos la potencia para evitar fricción fuerte
+      } else {
+        digitalWrite(adelante, LOW);
+        digitalWrite(atras, LOW);
+        analogWrite(pwmMotor, 0);
+      }
+    }
+
+    if (blue == 'G') {
+      anguloDireccion = 10;
+      direccion.write(anguloDireccion);
+      digitalWrite(adelante, HIGH);
+      digitalWrite(atras, LOW);
+      analogWrite(pwmMotor, 255);
+    }
+
+    if (blue == 'I') {
+      anguloDireccion = 145;
+      direccion.write(anguloDireccion);
+      digitalWrite(adelante, HIGH);
+      digitalWrite(atras, LOW);
+      analogWrite(pwmMotor, 255);
+    }
+
+    if (blue == 'H') {
+      anguloDireccion = 10;
+      direccion.write(anguloDireccion);
+      digitalWrite(adelante, LOW);
+      digitalWrite(atras, HIGH);
+      analogWrite(pwmMotor, 145); // Retroceso con baja potencia
+    }
+
+    if (blue == 'J') {
+      anguloDireccion = 145;
+      direccion.write(anguloDireccion);
+      digitalWrite(adelante, LOW);
+      digitalWrite(atras, HIGH);
+      analogWrite(pwmMotor, 145); // Retroceso con baja potencia
+    }
+
+    if (blue == 'S') {
+      anguloDireccion = 90;
+      direccion.write(anguloDireccion);
+      digitalWrite(adelante, LOW);
+      digitalWrite(atras, LOW);
+      analogWrite(pwmMotor, 0);
+    }
+  }
+}
